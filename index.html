@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h2 class="logo">🤖 AI Dashboard</h2>
+
+            <button id="newChatBtn">New Chat</button>
+
+            <nav class="tools">
+
+                <button class="tool-btn active" data-tool="chat">💬 Chat</button>
+                <button class="tool-btn" data-tool="summary">📄 Summarizer</button>
+                <button class="tool-btn" data-tool="code">💻 Code Explainer</button>
+                <button class="tool-btn" data-tool="ideas">💡 Idea Generator</button>
+
+            </nav>
+
+            <div class="history-section">
+
+                <h3>History</h3>
+
+                <ul id="historyList"></ul>
+
+                <button id="clearHistoryBtn">Clear History</button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN AREA -->
+
+        <main class="main">
+
+            <section class="chat-section">
+
+                <div id="chatContainer"></div>
+
+            </section>
+
+            <section class="input-section">
+
+                <textarea id="promptInput" placeholder="Ask something..."></textarea>
+
+                <button id="generateBtn">Generate</button>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/config.local.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
