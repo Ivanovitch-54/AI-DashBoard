@@ -1,11 +1,9 @@
-const API_KEY =
-  "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";
-
 const toolButtons = document.querySelectorAll(".tool-btn");
 const promptInput = document.querySelector("#promptInput");
 const generateBtn = document.querySelector("#generateBtn");
 const clearHistoryBtn = document.querySelector("#clearHistoryBtn");
 const chatContainer = document.querySelector("#chatContainer");
+const newChatBtn = document.querySelector("#newChatBtn");
 
 let currentTool = "chat";
 let currentConversationId = null;
@@ -131,61 +129,31 @@ generateBtn.addEventListener("click", async () => {
 // Call IA //
 
 async function callAI(prompt, onToken) {
-  const response = await fetch(
-    "https://openrouter.ai/api/v1/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + API_KEY,
-        "HTTP-Referer": window.location.origin,
-        "X-Title": "AI Dashboard",
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-4o-mini",
-        stream: true,
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-      }),
+  const response = await fetch("http://localhost:3000/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      model: "openai/gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    }),
+  });
 
   if (!response.ok) {
-    throw new Error("API Error " + response.status);
+    throw new Error("API error");
   }
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
+  const data = await response.json();
 
-  let done = false;
+  const text = data.choices[0].message.content;
 
-  while (!done) {
-    const { value, done: doneReading } = await reader.read();
-    done = doneReading;
-
-    const chunk = decoder.decode(value, { stream: true });
-
-    const lines = chunk.split("\n");
-
-    for (let line of lines) {
-      if (line.startsWith("data: ")) {
-        const data = line.replace("data: ", "");
-
-        if (data === "[DONE]") return;
-
-        try {
-          const json = JSON.parse(data);
-          const token = json.choices?.[0]?.delta?.content;
-
-          if (token) onToken(token);
-        } catch (e) {}
-      }
-    }
-  }
+  onToken(text);
 }
 
 // Select IA Tool
